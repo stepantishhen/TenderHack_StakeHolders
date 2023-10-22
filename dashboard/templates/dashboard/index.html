@@ -11,7 +11,7 @@
             class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
     <li class="nav-item"><a class="nav-link" href="{% url 'logs' %}"><i
             class="fas fa-user"></i><span>Logs</span></a></li>
-    <li class="nav-item"><a class="nav-link" href="table.html"><i
+    <li class="nav-item"><a class="nav-link" href="{% url 'tickets' %}"><i
             class="fas fa-table"></i><span>Обращения</span></a></li>
     <li class="nav-item"><a class="nav-link" href="login.html"><i class="far fa-user-circle"></i><span>Ошибки</span></a>
     </li>
@@ -22,7 +22,6 @@
 {% endblock %}
 
 {% block content %}
-<div class="d-flex flex-column" id="content-wrapper">
     <div id="content" style="padding-top: 16px">
         <div class="container-fluid">
             <div class="d-sm-flex justify-content-between align-items-center mb-4">
@@ -293,11 +292,4 @@
             </div>
         </div>
     </div>
-</div>
-<footer class="bg-white sticky-footer">
-    <div class="container my-auto">
-        <div class="text-center my-auto copyright"><span>Copyright © StakeHolders 2023</span></div>
-    </div>
-</footer>
-<a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
 {% endblock %}

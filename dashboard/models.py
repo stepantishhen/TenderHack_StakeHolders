@@ -1,3 +1,4 @@
+# encoding: utf-8
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -23,8 +24,8 @@ class SystemLog(models.Model):
 
 
 class Ticket(models.Model):
-    subject = models.CharField(max_length=255)
-    text = models.TextField()
-    performer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_tickets')
-    initiator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_tickets')
-    status = models.CharField(max_length=255)
+    subject = models.CharField(max_length=255, verbose_name="Тема")
+    text = models.TextField(verbose_name="Обращение")
+    performer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='assigned_tickets', verbose_name="Исполнитель")
+    initiator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_tickets', verbose_name="Инициатор")
+    status = models.CharField(max_length=255,  verbose_name="Статус")
