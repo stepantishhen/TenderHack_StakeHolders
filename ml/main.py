@@ -1,32 +1,11 @@
-import nltk
 import pandas as pd
+from string import punctuation
 from nltk.corpus import stopwords
-from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import SGDClassifier
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn import metrics
-from sklearn.model_selection import GridSearchCV
-
-nltk.download("stopwords")
-from string import punctuation
-
-russian_stopwords = stopwords.words("russian")
-
-logs = pd.read_csv("unique_logs3.csv", delimiter=";", header=None, names=['log', 'error_type', 'class'])
-# all_logs = pd.read_csv("all_logs.csv", delimiter=";", header=None, names=['id', 'data', 'description'])
-
-# Получение текстовой строки из списка слов
-def str_corpus(corpus):
-    str_corpus = ''
-    for i in corpus:
-        str_corpus += ' ' + i
-    str_corpus = str_corpus.strip()
-    return str_corpus
+from sklearn.pipeline import Pipeline
 
 
-# Получение списка всех слов в корпусе
 def get_corpus(data):
     corpus = []
     for phrase in data:
@@ -42,6 +21,9 @@ def remove_punct(text):
     return text.translate(table)
 
 
+russian_stopwords = stopwords.words("russian")
+logs = pd.read_csv("unique_logs_splitted.csv", delimiter=";", header=None, names=['log', 'error_type', 'key_words'])
+all_logs = pd.read_csv("all_logs.csv", delimiter=";", header=None, names=['id', 'time', 'log'])
 corpus = get_corpus(logs['log'].values)
 
 logs['log'] = logs['log'].map(lambda x: x.lower())
@@ -52,32 +34,13 @@ logs['log'] = logs['log'].map(lambda x: [token for token in x if token not in ru
                                          and token.strip() not in punctuation])
 logs['log'] = logs['log'].map(lambda x: ' '.join(x))
 
-X_train, X_valid, y_train, y_valid = train_test_split(logs['log'], logs['class'], test_size=0.1, random_state=42)
-X_train, X_test, y_train, y_test = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
-
-sgd_ppl_clf = Pipeline([
-    ('tfidf', TfidfVectorizer()),
-    ('sgd_clf', SGDClassifier(random_state=42))])
-knb_ppl_clf = Pipeline([
-    ('tfidf', TfidfVectorizer()),
-    ('knb_clf', KNeighborsClassifier(n_neighbors=10))])
-sgd_ppl_clf.fit(X_train, y_train)
-knb_ppl_clf.fit(X_train, y_train)
-
-predicted_sgd = sgd_ppl_clf.predict(X_test)
-# print(metrics.classification_report(predicted_sgd, y_test))
-#
-# predicted_sgd = knb_ppl_clf.predict(X_test)
-# print(metrics.classification_report(predicted_sgd, y_test))
-
 sgd_ppl_clf = Pipeline([
     ('tfidf', TfidfVectorizer(ngram_range=(1, 2))),
     ('sgd_clf', SGDClassifier(penalty='elasticnet', class_weight='balanced', random_state=42))])
-sgd_ppl_clf.fit(X_train, y_train)
-# predicted_sgd = sgd_ppl_clf.predict(X_test)
-# print(metrics.classification_report(predicted_sgd, y_test))
-# predicted_sgd_val = sgd_ppl_clf.predict(all_logs['description'])
-# log_descriptions = all_logs['description']
-print(sgd_ppl_clf.predict(["The wait operation timed out"]))
+sgd_ppl_clf.fit(logs['log'], logs['error_type'])
 
-# print(metrics.classification_report(predicted_sgd_val, y_valid))
+got_error = input(">> ")
+error_type = sgd_ppl_clf.predict([got_error])
+
+print(f"Полученная ошибка: {got_error}")
+print(f"Тип: {error_type}")
