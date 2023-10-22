@@ -9,9 +9,9 @@
 <ul class="navbar-nav text-light" id="accordionSidebar">
     <li class="nav-item"><a class="nav-link" href="{% url 'dashboard' %}"><i
             class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
-    <li class="nav-item"><a class="nav-link active" href="{% url 'logs' %}"><i
+    <li class="nav-item"><a class="nav-link" href="{% url 'logs' %}"><i
             class="fas fa-user"></i><span>Logs</span></a></li>
-    <li class="nav-item"><a class="nav-link" href="{% url 'tickets' %}"><i
+    <li class="nav-item"><a class="nav-link active" href="{% url 'tickets' %}"><i
             class="fas fa-table"></i><span>Обращения</span></a></li>
     <li class="nav-item"><a class="nav-link" href="login.html"><i class="far fa-user-circle"></i><span>Ошибки</span></a>
     </li>
@@ -35,17 +35,21 @@
                         <table class="table table-striped">
                             <thead>
                             <tr>
-                                <th scope="col" class="text-dark mb-0">Category</th>
-                                <th scope="col" class="text-dark mb-0">Info</th>
-                                <th scope="col" class="text-dark mb-0">DateTime</th>
+                                <th scope="col" class="text-dark mb-0">subject</th>
+                                <th scope="col" class="text-dark mb-0">text</th>
+                                <th scope="col" class="text-dark mb-0">performer</th>
+                                <th scope="col" class="text-dark mb-0">initiator</th>
+                                <th scope="col" class="text-dark mb-0">status</th>
                             </tr>
                             </thead>
                             <tbody>
-                            {% for log in log_list %}
+                            {% for ticket in ticket_list %}
                             <tr>
-                                <th scope="row">{{ log.category }}</th>
-                                <td>{{ log.log }}</td>
-                                <td>{{ log.date_time }}</td>
+                                <th scope="row">{{ ticket.subject }}</th>
+                                <td>{{ ticket.text }}</td>
+                                <td>{{ ticket.performer }}</td>
+                                <td>{{ ticket.initiator }}</td>
+                                <td>{{ ticket.status }}</td>
                             </tr>
                             {% endfor %}
                             </tbody>
@@ -58,7 +62,7 @@
                         <div class="card-body">
                     {% bootstrap_messages %}
                     {# Display a form #}
-                    <form action="/url/to/submit/" method="post" class="form">
+                    <form action="{% url 'tickets' %}" method="post" class="form">
                       {% csrf_token %}
 
                       {% bootstrap_form form %}
